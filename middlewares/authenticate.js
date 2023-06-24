@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const BASE_URL = process.env.BASE_URL;
 
 function generateToken(user) {
 	const token = jwt.sign(
@@ -8,8 +9,8 @@ function generateToken(user) {
 			username: user.username,
 			fullname: user.fullname,
 			instance: user.instance,
-			image: user.image,
-			signature: user.signature,
+			image: `${BASE_URL}/${user.image}`,
+			signature: `${BASE_URL}/${user.signature}`,
 		},
 		process.env.JWT_SECRET,
 		{ expiresIn: '2h' }

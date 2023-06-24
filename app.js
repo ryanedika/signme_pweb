@@ -5,6 +5,9 @@ const logger = require('morgan');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { mkdirSync, existsSync } = require('fs');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
 app.set('views', path.join(__dirname, 'views'));

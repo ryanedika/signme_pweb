@@ -30,8 +30,42 @@ router.get('/dashboard', authenticateRoute, (req, res) => {
 	if (!res.user) res.redirect('/login');
 	else {
 		res.render('dashboard', {
-			title: 'SignMe Dashboard',
 			user: res.user,
+			title: 'SignMe Dashboard',
+			message: 'Welcome Back!',
+		});
+	}
+});
+
+router.get('/documents', authenticateRoute, (req, res) => {
+	if (!res.user) res.redirect('/login');
+	else {
+		res.render('document/index', {
+			user: res.user,
+			title: 'SignMe Documents',
+			message: 'Your Documents',
+		});
+	}
+});
+
+router.get('/inbox', authenticateRoute, (req, res) => {
+	if (!res.user) res.redirect('/login');
+	else {
+		res.render('request/inbox', {
+			user: res.user,
+			title: 'SignMe Inbox',
+			message: 'Document Sign Inbox',
+		});
+	}
+});
+
+router.get('/requests/outbox', authenticateRoute, (req, res) => {
+	if (!res.user) res.redirect('/login');
+	else {
+		res.render('request/outbox', {
+			user: res.user,
+			title: 'SignMe Outbox',
+			message: 'Document Sign Outbox',
 		});
 	}
 });

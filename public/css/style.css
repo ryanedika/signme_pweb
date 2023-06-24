@@ -49,6 +49,10 @@ h1 {
 	background-color: var(--color-muted);
 }
 
+.text-dark {
+	color: var(--color-dark);
+}
+
 #authSection,
 #profileSection {
 	width: 60%;
@@ -114,4 +118,31 @@ h1 {
 .dropdown-item:active {
 	background-color: var(--color-signme);
 	color: var(--color-white);
+}
+
+#heroSection {
+	height: 100vh;
+	background: linear-gradient(120deg, #ffebdc, #ddf6f4, #d9e3fc);
+}
+
+.font-title {
+	font-family: var(--font-title);
+}
+
+.font-text {
+	font-family: var(--font-text);
+}
+
+.text-signme {
+	color: var(--color-signme);
+}
+
+.circle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 2.75rem;
+	aspect-ratio: 1/1;
+	border-radius: 50%;
 }

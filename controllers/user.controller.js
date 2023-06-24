@@ -71,6 +71,8 @@ async function loginUser(req, res) {
 	}
 }
 
+const BASE_URL = process.env.BASE_URL;
+
 async function getUserProfile(req, res) {
 	const { id } = req.params;
 
@@ -83,8 +85,8 @@ async function getUserProfile(req, res) {
 			fullname: user.fullname,
 			username: user.username,
 			instance: user.instance,
-			image: user.image,
-			signature: user.signature,
+			image: `${BASE_URL}/${user.image}`,
+			signature: `${BASE_URL}/${user.signature}`,
 			email: user.email,
 		});
 	} catch (error) {
@@ -92,9 +94,6 @@ async function getUserProfile(req, res) {
 		return res.status(500).json({ message: 'Internal server error' });
 	}
 }
-
-// get root path of the project
-const rootPath = path.join(__dirname, '../..');
 
 async function updateUserProfile(req, res) {
 	const { id } = req.params;
