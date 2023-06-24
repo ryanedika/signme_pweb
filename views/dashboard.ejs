@@ -16,26 +16,27 @@
 		<main>
 			<div class="container-fluid">
 				<div class="row min-vh-100">
-					<div class="col-12 col-lg-3 bg-signme"></div>
-					<div class="col-12 col-lg-9 p-3">
+					<div class="col-12 col-lg-2 bg-signme"></div>
+					<div class="col-12 col-lg-10 p-3">
 						<div class="d-flex justify-content-end align-items-center w-100">
-							<div class="dropdown">
-								<button
-									class="btn btn-signme dropdown-toggle"
-									type="button"
-									id="avatar"
-									data-bs-toggle="dropdown"
-									aria-expanded="false">
-									<%= user.fullname %>
-								</button>
-								<ul class="dropdown-menu" aria-labelledby="avatar">
-									<li>
-										<form action="/logout" id="logoutForm">
-											<button class="dropdown-item" type="submit">Logout</button>
-										</form>
-									</li>
-								</ul>
+							<div class="d-flex flex-column align-items-end me-3">
+								<span class="fw-bold"><%= user.fullname %></span>
+								<span class="text-muted"><%= user.email %></span>
 							</div>
+							<div
+								class="rounded-circle bg-gray dropdown"
+								id="avatar"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+								style="background-image: url('<%= user.image %>')"></div>
+							<ul class="dropdown-menu mt-3" aria-labelledby="avatar">
+								<li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+								<li>
+									<form id="logoutForm">
+										<button class="dropdown-item" type="submit">Logout</button>
+									</form>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
@@ -52,16 +53,15 @@
 
 			logout.addEventListener('submit', (e) => {
 				e.preventDefault();
-				fetch('/logout', {
+
+				fetch('/api/logout', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
 				})
 					.then((res) => {
-						if (res.status === 200) {
-							window.location.href = '/';
-						}
+						if (res.status === 200) window.location.href = '/';
 					})
 					.catch((err) => console.log(err));
 			});

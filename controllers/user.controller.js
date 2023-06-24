@@ -1,7 +1,10 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+
+const { unlinkSync } = require('fs');
 const { generateToken } = require('../middlewares/authenticate');
-const { Op } = require('sequelize');
+const { Op: Operands } = require('sequelize');
+const path = require('path');
 
 async function registerUser(req, res) {
 	try {
@@ -13,7 +16,7 @@ async function registerUser(req, res) {
 
 		const findUser = await User.findOne({
 			where: {
-				[Op.or]: [{ email: email }, { username: username }],
+				[Operands.or]: [{ email: email }, { username: username }],
 			},
 		});
 
@@ -68,22 +71,6 @@ async function loginUser(req, res) {
 	}
 }
 
-async function getAllUser(req, res) {
-	try {
-		const currentUser = req.user;
-		const user = await User.findByPk(currentUser.id);
-
-		if (!user) {
-			return res.status(404).json({ message: 'User not found' });
-		}
-
-		return res.status(200).json({ user });
-	} catch (error) {
-		console.error('Error retrieving current user:', error);
-		return res.status(500).json({ message: 'Internal server error' });
-	}
-}
-
 async function getUserProfile(req, res) {
 	const { id } = req.params;
 
@@ -106,9 +93,61 @@ async function getUserProfile(req, res) {
 	}
 }
 
+// get root path of the project
+const rootPath = path.join(__dirname, '../..');
+
+async function updateUserProfile(req, res) {
+	const { id } = req.params;
+	const { fullname, username, email, instance } = req.body;
+	const { image, signature } = req.files;
+
+	try {
+		const findUser = await User.findByPk(id);
+		if (!findUser) return res.status(404).json({ message: 'User not found' });
+
+		const data = {
+			fullname,
+			username,
+			email,
+			instance,
+		};
+
+		if (image) {
+			data.image = image[0].path.replace(/\\/g, '/');
+			findUser.image && unlinkSync(findUser.image);
+		}
+
+		if (signature) {
+			data.signature = signature[0].path.replace(/\\/g, '/');
+			findUser.signature && unlinkSync(findUser.signature);
+		}
+
+		const updatedUser = await findUser.update(data);
+		const token = generateToken(updatedUser);
+
+		return res
+			.status(200)
+			.cookie('token', token, { httpOnly: true })
+			.json({ message: 'User profile updated successfully', token });
+	} catch (error) {
+		console.error('Error updating user profile:', error);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+}
+
+async function logoutUser(req, res) {
+	try {
+		return res.status(200).clearCookie('token').json({ message: 'User logged out successfully' });
+	} catch (error) {
+		console.error('Error logging out user:', error);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+}
+
 module.exports = {
 	registerUser,
 	loginUser,
-	getAllUser,
 	getUserProfile,
+	logoutUser,
+	updateUserProfile,
 };

@@ -17,7 +17,6 @@ router.get('/profile', authenticateRoute, (req, res) => {
 			})
 				.then((res) => res.json())
 				.then((data) => {
-					console.log(data);
 					res.render('user/profile', {
 						title: 'SignMe Profile',
 						user: data,

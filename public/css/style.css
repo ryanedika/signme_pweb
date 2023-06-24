@@ -45,13 +45,16 @@ h1 {
 	background-color: var(--color-lighter);
 }
 
+.bg-gray {
+	background-color: var(--color-muted);
+}
+
 #authSection,
 #profileSection {
 	width: 60%;
 }
 
 .btn-signme {
-	width: 100%;
 	display: block;
 	font-weight: 500;
 	color: var(--color-white);
@@ -77,8 +80,9 @@ h1 {
 	max-width: 400px;
 	aspect-ratio: 1/1;
 
-	object-fit: cover;
-	object-position: center;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 	background-color: var(--color-muted);
 }
 
@@ -86,7 +90,28 @@ h1 {
 	width: 100%;
 	aspect-ratio: 16/9;
 
-	object-fit: cover;
-	object-position: center;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 	background-color: var(--color-muted);
+}
+
+.dropdown {
+	width: 2.75rem;
+	aspect-ratio: 1/1;
+	cursor: pointer;
+
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: var(--color-muted);
+}
+
+.dropdown-menu {
+	width: 12rem;
+}
+
+.dropdown-item:active {
+	background-color: var(--color-signme);
+	color: var(--color-white);
 }

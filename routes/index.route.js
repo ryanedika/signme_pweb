@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/login', authenticateRoute, (req, res) => {
-	if (res.user) res.redirect('/user/profile');
+	if (res.user) res.redirect('/dashboard');
 	else {
 		res.render('login', {
 			title: 'SignMe Login',
@@ -18,7 +18,7 @@ router.get('/login', authenticateRoute, (req, res) => {
 });
 
 router.get('/register', authenticateRoute, (req, res) => {
-	if (res.user) res.redirect('/user/profile');
+	if (res.user) res.redirect('/dashboard');
 	else {
 		res.render('register', {
 			title: 'SignMe Register',

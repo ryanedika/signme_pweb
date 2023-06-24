@@ -75,7 +75,7 @@
 					.then((res) => res.json())
 					.then((data) => {
 						if (data.error) alert(data.error);
-						else window.location.href = '/user/profile';
+						else window.location.href = '/dashboard';
 					})
 					.catch((err) => console.log(err));
 			});

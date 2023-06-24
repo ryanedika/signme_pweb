@@ -15,17 +15,18 @@
 	<body>
 		<main>
 			<div class="container">
-				<h1 class="text-center mb-5">User Profile</h1>
+				<div class="d-flex my-5 justify-content-between align-items-center">
+					<button id="back" class="btn btn-signme" onclick="window.location.href='/dashboard';">Back</button>
+					<h1 class="text-center">User Profile</h1>
+				</div>
 				<div class="row">
 					<div class="col-12 col-lg-6 d-flex align-items-start justify-content-center">
-						<div class="rounded-circle profile-img">
-							<% if (user.image) { %>
-							<img src="<%= user.image %>" alt="Profile" class="img-fluid" />
-							<% } %>
-						</div>
+						<div
+							class="rounded-circle profile-img"
+							style="background-image: url('/<%= user.image %>')"></div>
 					</div>
 					<div class="col-12 col-lg-6 mt-5 mt-lg-0">
-						<form action="#">
+						<form enctype="multipart/form-data">
 							<div class="mb-3">
 								<label for="email" class="form-label">Email address</label>
 								<input
@@ -34,6 +35,16 @@
 									id="email"
 									name="email"
 									value="<%= user.email %>" />
+							</div>
+
+							<div class="mb-3">
+								<label for="username" class="form-label">Username</label>
+								<input
+									type="text"
+									class="form-control"
+									id="username"
+									name="username"
+									value="<%= user.username %>" />
 							</div>
 
 							<div class="mb-3">
@@ -47,6 +58,16 @@
 							</div>
 
 							<div class="mb-3">
+								<label for="image" class="form-label">Image</label>
+								<input
+									type="file"
+									class="form-control"
+									id="image"
+									name="image"
+									value="<%= user.image %>" />
+							</div>
+
+							<div class="mb-3">
 								<label for="instance" class="form-label">Instance</label>
 								<input
 									type="text"
@@ -56,19 +77,11 @@
 									value="<%= user.instance %>" />
 							</div>
 
-							<div class="mb-3">
-								<label for="username" class="form-label">Username</label>
-								<input
-									type="text"
-									class="form-control"
-									id="username"
-									name="username"
-									value="<%= user.username %>" />
-							</div>
-
 							<div class="mb-4">
 								<label for="signature" class="form-label">Signature</label>
-								<div class="signature-img mb-3 rounded-3"></div>
+								<div
+									class="signature-img mb-3 rounded-3"
+									style="background-image: url('/<%= user.signature %>')"></div>
 								<input
 									type="file"
 									class="form-control"
@@ -79,6 +92,9 @@
 
 							<button type="submit" class="btn btn-signme">Update</button>
 						</form>
+
+						<!-- handle with fetch -->
+						<script></script>
 					</div>
 				</div>
 			</div>
@@ -90,34 +106,49 @@
 			crossorigin="anonymous"></script>
 
 		<script>
-			const form = document.getElementById('loginForm');
+			const signature = document.getElementById('signature');
+			const image = document.getElementById('image');
+			const form = document.querySelector('form');
 
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
 
-				const email = document.getElementById('email').value;
-				const password = document.getElementById('password').value;
-				const data = {
-					email,
-					password,
-				};
+				const formData = new FormData(form);
 
-				fetch('/login', {
+				fetch('/api/profile/<%= user.id %>', {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(data),
+					body: formData,
 				})
 					.then((res) => res.json())
 					.then((data) => {
-						if (data.error) {
-							alert(data.error);
-						} else {
-							window.location.href = '/';
-						}
+						if (data.error) alert(data.error);
+						else alert(data.message);
 					})
 					.catch((err) => console.log(err));
+			});
+
+			signature.addEventListener('change', (e) => {
+				const file = e.target.files[0];
+				const reader = new FileReader();
+
+				reader.onload = () => {
+					const img = document.querySelector('.signature-img');
+					img.style.backgroundImage = `url(${reader.result})`;
+				};
+
+				reader.readAsDataURL(file);
+			});
+
+			image.addEventListener('change', (e) => {
+				const file = e.target.files[0];
+				const reader = new FileReader();
+
+				reader.onload = () => {
+					const img = document.querySelector('.profile-img');
+					img.style.backgroundImage = `url(${reader.result})`;
+				};
+
+				reader.readAsDataURL(file);
 			});
 		</script>
 	</body>

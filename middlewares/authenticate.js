@@ -8,6 +8,8 @@ function generateToken(user) {
 			username: user.username,
 			fullname: user.fullname,
 			instance: user.instance,
+			image: user.image,
+			signature: user.signature,
 		},
 		process.env.JWT_SECRET,
 		{ expiresIn: '2h' }
