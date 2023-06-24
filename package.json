@@ -1,0 +1,28 @@
+{
+	"name": "signme-clean",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"start": "nodemon ./bin/www",
+		"watch": "nodemon --ext ejs,js,css ./bin/www"
+	},
+	"dependencies": {
+		"bcrypt": "^5.1.0",
+		"cookie-parser": "~1.4.4",
+		"debug": "~2.6.9",
+		"dotenv": "^16.3.1",
+		"ejs": "~2.6.1",
+		"express": "~4.16.1",
+		"http-errors": "~1.6.3",
+		"jsonwebtoken": "^9.0.0",
+		"morgan": "~1.9.1",
+		"mysql2": "^3.4.0",
+		"sequelize": "^6.32.1"
+	},
+	"devDependencies": {
+		"connect-livereload": "^0.6.1",
+		"livereload": "^0.9.3",
+		"nodemon": "^2.0.22",
+		"sequelize-cli": "^6.6.1"
+	}
+}

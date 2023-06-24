@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+:root {
+	--font-title: 'Playfair Display', serif;
+	--font-text: 'Poppins', sans-serif;
+
+	--color-signme: #95cecc;
+	--color-signme-light: #a2d8d6;
+	--color-lighter: #e1f5f2;
+	--color-white: #ffffff;
+	--color-dark: #1b1b1b;
+	--color-muted: #f4f4f4;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
+	box-sizing: border-box;
+
+	color: var(--color-dark);
+	font-family: var(--font-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0;
+	font-family: var(--font-title);
+}
+
+h1 {
+	font-weight: 900;
+}
+
+.bg-signme {
+	background-color: var(--color-signme);
+}
+
+.bg-lighter {
+	background-color: var(--color-lighter);
+}
+
+#authSection,
+#profileSection {
+	width: 60%;
+}
+
+.btn-signme {
+	width: 100%;
+	display: block;
+	font-weight: 500;
+	color: var(--color-white);
+	background-color: var(--color-signme);
+}
+
+.btn-signme:hover {
+	color: var(--color-white);
+	background-color: var(--color-signme-light);
+}
+
+#authSection span {
+	font-size: 14px;
+}
+
+#authSection a {
+	color: var(--color-signme);
+	text-decoration: none;
+}
+
+.profile-img {
+	width: 100%;
+	max-width: 400px;
+	aspect-ratio: 1/1;
+
+	object-fit: cover;
+	object-position: center;
+	background-color: var(--color-muted);
+}
+
+.signature-img {
+	width: 100%;
+	aspect-ratio: 16/9;
+
+	object-fit: cover;
+	object-position: center;
+	background-color: var(--color-muted);
+}
