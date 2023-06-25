@@ -88,7 +88,7 @@
 							alert(data.error);
 							return;
 						}
-						alert('Document uploaded successfully');
+						alert(data.message);
 						window.location.href = '/document';
 					})
 					.catch((err) => {

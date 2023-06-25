@@ -79,8 +79,7 @@
 							alert(data.error);
 							return;
 						}
-
-						alert('Document uploaded successfully');
+						alert(data.message);
 						window.location.href = '/document';
 					})
 					.catch((err) => {
@@ -94,6 +93,11 @@
 
 				if (file.size > 2097152) {
 					alert('File size cannot exceed more than 2MB');
+					return;
+				}
+
+				if (!file.name.endsWith('.pdf')) {
+					alert('File must be a PDF');
 					return;
 				}
 
