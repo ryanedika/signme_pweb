@@ -17,14 +17,15 @@
 
 	<body>
 		<main>
-			<div class="container">
+			<div class="container py-5">
 				<div class="d-flex align-items-center justify-content-between">
 					<button id="back" class="btn btn-signme circle" onclick="window.location.href='/dashboard';">
 						<span class="material-symbols-rounded text-white"> arrow_back_ios_new </span>
 					</button>
-					<h1 class="text-center mt-5">User Profile</h1>
+					<h1 class="text-center">User Profile</h1>
 					<div class="empty"></div>
 				</div>
+
 				<div class="row my-5">
 					<div class="col-12 col-lg-6 d-flex align-items-start justify-content-center">
 						<div
@@ -32,7 +33,7 @@
 							style="background-image: url('<%= user.image %>')"></div>
 					</div>
 					<div class="col-12 col-lg-6 mt-5 mt-lg-0">
-						<form enctype="multipart/form-data">
+						<form enctype="multipart/form-data" id="profileForm">
 							<div class="mb-3">
 								<label for="email" class="form-label">Email address</label>
 								<input
@@ -111,14 +112,14 @@
 		<script>
 			const signature = document.getElementById('signature');
 			const image = document.getElementById('image');
-			const form = document.querySelector('form');
+			const form = document.getElementById('profileForm');
 
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
 
 				const formData = new FormData(form);
 
-				fetch('/api/profile/<%= user.id %>', {
+				fetch('/api/profile', {
 					method: 'POST',
 					body: formData,
 				})

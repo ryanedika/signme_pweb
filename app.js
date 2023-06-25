@@ -47,10 +47,12 @@ app.use(connectLiveReload());
 const apiRoute = require('./routes/api.route');
 const indexRoute = require('./routes/index.route');
 const userRouter = require('./routes/user.route');
+const documentRouter = require('./routes/document.route');
 
 app.use('/', indexRoute);
 app.use('/api', apiRoute);
 app.use('/user', userRouter);
+app.use('/document', documentRouter);
 
 app.use(function (req, res, next) {
 	next(createError(404));

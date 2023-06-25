@@ -20,7 +20,7 @@ function generateToken(user) {
 
 function authenticateToken(req, res, next) {
 	const authHeader = req.headers['authorization'];
-	const token = authHeader && authHeader.split(' ')[1];
+	const token = (authHeader && authHeader.split(' ')[1]) || req.cookies.token;
 
 	if (!token) {
 		res.user = null;

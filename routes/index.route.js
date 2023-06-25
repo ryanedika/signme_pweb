@@ -37,17 +37,6 @@ router.get('/dashboard', authenticateRoute, (req, res) => {
 	}
 });
 
-router.get('/documents', authenticateRoute, (req, res) => {
-	if (!res.user) res.redirect('/login');
-	else {
-		res.render('document/index', {
-			user: res.user,
-			title: 'SignMe Documents',
-			message: 'Your Documents',
-		});
-	}
-});
-
 router.get('/inbox', authenticateRoute, (req, res) => {
 	if (!res.user) res.redirect('/login');
 	else {
@@ -59,7 +48,7 @@ router.get('/inbox', authenticateRoute, (req, res) => {
 	}
 });
 
-router.get('/requests/outbox', authenticateRoute, (req, res) => {
+router.get('/outbox', authenticateRoute, (req, res) => {
 	if (!res.user) res.redirect('/login');
 	else {
 		res.render('request/outbox', {

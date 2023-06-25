@@ -52,6 +52,7 @@ async function registerUser(req, res) {
 async function loginUser(req, res) {
 	try {
 		const { email, password } = req.body;
+
 		const findUser = await User.findOne({
 			where: { email },
 		});
@@ -74,9 +75,9 @@ async function loginUser(req, res) {
 const BASE_URL = process.env.BASE_URL;
 
 async function getUserProfile(req, res) {
-	const { id } = req.params;
-
 	try {
+		const { id } = res.user;
+
 		const user = await User.findByPk(id);
 		if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -96,11 +97,11 @@ async function getUserProfile(req, res) {
 }
 
 async function updateUserProfile(req, res) {
-	const { id } = req.params;
-	const { fullname, username, email, instance } = req.body;
-	const { image, signature } = req.files;
-
 	try {
+		const { id } = res.user;
+		const { fullname, username, email, instance } = req.body;
+		const { image, signature } = req.files;
+
 		const findUser = await User.findByPk(id);
 		if (!findUser) return res.status(404).json({ message: 'User not found' });
 

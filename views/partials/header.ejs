@@ -26,6 +26,7 @@
 	const logout = document.getElementById('logoutForm');
 	logout.addEventListener('submit', (e) => {
 		e.preventDefault();
+
 		fetch('/api/logout', {
 			method: 'POST',
 			headers: {

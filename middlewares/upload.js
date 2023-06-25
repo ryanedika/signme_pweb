@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
 			case 'image':
 				cb(null, 'uploads/images');
 				break;
-			case 'document':
+			case 'file':
 				cb(null, 'uploads/documents');
 				break;
 			case 'signature':
@@ -30,5 +30,5 @@ module.exports = {
 		{ name: 'image', maxCount: 1 },
 		{ name: 'signature', maxCount: 1 },
 	]),
-	uploadDocument: multer({ storage }).single('document'),
+	uploadFile: multer({ storage }).single('file'),
 };

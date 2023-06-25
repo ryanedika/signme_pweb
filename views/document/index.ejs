@@ -20,7 +20,63 @@
 			<div class="container-fluid">
 				<div class="row min-vh-100">
 					<%- include('../partials/sidebar') %>
-					<div class="col-12 col-lg-10 p-4"><%- include('../partials/header') %></div>
+					<div class="col-12 col-lg-9 p-5">
+						<%- include('../partials/header') %>
+
+						<div class="mt-5">
+							<a href="/document/create" class="btn btn-signme d-inline-flex align-items-center">
+								<span class="material-symbols-rounded"> add </span>
+								Add New Document
+							</a>
+						</div>
+
+						<div class="mt-4">
+							<% if (documents.length > 0) { %>
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="fw-medium w-50" scope="col">Title</th>
+										<th class="fw-medium w-25" scope="col">Uploaded At</th>
+										<th class="fw-medium w-25 text-end" scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% documents.forEach(function(document) { %>
+									<tr class="align-middle">
+										<td><%= document.title %></td>
+										<td><%= document.created_at %></td>
+										<td class="text-end">
+											<a
+												href="/document/view/<%= document.id %>"
+												class="btn btn-signme d-inline-flex align-items-center">
+												<span class="material-symbols-rounded"> visibility </span>
+											</a>
+											<a
+												href="/document/edit/<%= document.id %>"
+												class="btn btn-signme d-inline-flex align-items-center">
+												<span class="material-symbols-rounded"> edit </span>
+											</a>
+											<button
+												type="button"
+												id="delete"
+												data-id="<%= document.id %>"
+												data-title="<%= document.title %>"
+												class="btn btn-signme d-inline-flex align-items-center">
+												<span class="material-symbols-rounded"> delete </span>
+											</button>
+										</td>
+									</tr>
+									<% }) %>
+								</tbody>
+							</table>
+							<% } else { %>
+							<div class="text-center mt-5">
+								<h5 class="fw-bold mb-2 font-text">No Documents Found</h5>
+								<p class="text-muted">You have not uploaded any documents yet.</p>
+							</div>
+							<% } %>
+						</div>
+					</div>
 				</div>
 			</div>
 		</main>
@@ -29,5 +85,35 @@
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 			integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
 			crossorigin="anonymous"></script>
+
+		<script>
+			const buttons = document.querySelectorAll('#delete');
+
+			buttons.forEach((button) => {
+				button.addEventListener('click', (e) => {
+					const id = e.target.dataset.id;
+					const title = e.target.dataset.title;
+
+					if (!confirm(`Are you sure you want to delete ${title}?`)) {
+						return;
+					}
+
+					fetch(`/api/documents/${id}`, {
+						method: 'DELETE',
+					})
+						.then((res) => res.json())
+						.then((data) => {
+							if (data.error) {
+								alert(data.error);
+								return;
+							}
+							window.location.reload();
+						})
+						.catch((err) => {
+							console.log(err);
+						});
+				});
+			});
+		</script>
 	</body>
 </html>

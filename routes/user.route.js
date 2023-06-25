@@ -8,10 +8,10 @@ router.get('/profile', authenticateRoute, (req, res) => {
 	if (!res.user) res.redirect('/login');
 	else {
 		try {
-			fetch(`${BASE_URL}/api/profile/${res.user.id}`, {
+			fetch(`${BASE_URL}/api/profile`, {
 				method: 'GET',
 				headers: {
-					'Content-Type': 'application/json',
+					contentType: 'application/json',
 					Authorization: `Bearer ${req.cookies.token}`,
 				},
 			})
