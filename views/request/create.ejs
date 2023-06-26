@@ -28,7 +28,7 @@
 								<label for="document" class="form-label">Document</label>
 								<select class="form-select" id="document" name="document">
 									<option selected disabled value="">Choose Document</option>
-									<% documents && documents.forEach(function(document) { %>
+									<% documents.length > 0 && documents.forEach(function(document) { %>
 									<option value="<%= document.id %>"><%= document.title %></option>
 									<% }) %>
 								</select>
@@ -38,7 +38,7 @@
 								<label for="recipient" class="form-label">Recipient</label>
 								<select class="form-select" id="recipient" name="recipient">
 									<option selected disabled value="">Choose Recipient</option>
-									<% users && users.forEach(function(user) { %>
+									<% users.length > 0 && users.forEach(function(user) { %>
 									<option value="<%= user.id %>"><%= user.fullname %></option>
 									<% }) %>
 								</select>
