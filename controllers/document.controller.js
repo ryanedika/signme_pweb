@@ -124,19 +124,21 @@ const deleteSingleDocument = async (req, res) => {
 		const { id: document_id } = req.params;
 
 		const document = await Document.findOne({
-			where: { id: document_id, owner_id: id },
-			include: [
-				{
-					model: Request,
-					as: 'requests',
+			where: {
+				id: {
+					[Operands.and]: [
+						document_id,
+						sequelize.literal(
+							`id NOT IN (SELECT document_id FROM Requests WHERE sender_id = ${id} OR receiver_id = ${id})`
+						),
+					],
 				},
-			],
+				owner_id: id,
+			},
 		});
-		if (!document) return res.status(404).json({ error: 'Document not found' });
-		if (document.requests.length > 0)
-			return res.status(400).json({ error: 'Cannot delete document that ascociated with requests' });
+		if (!document) return res.status(404).json({ error: 'Document not found or already requested' });
 
-		unlinkSync(document.file);
+		unlinkSync(document.dataValues.file);
 
 		await document.destroy();
 		return res.status(200).json({ message: 'Document deleted successfully' });
