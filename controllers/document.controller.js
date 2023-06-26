@@ -1,4 +1,4 @@
-const { Document } = require('../models/models');
+const { Document, Request } = require('../models/models');
 
 const { unlinkSync } = require('fs');
 const { simpleTimeFormat } = require('../utilities/formatter');
@@ -105,9 +105,16 @@ const deleteSingleDocument = async (req, res) => {
 
 		const document = await Document.findOne({
 			where: { id: document_id, owner_id: id },
+			include: [
+				{
+					model: Request,
+					as: 'requests',
+				},
+			],
 		});
-
 		if (!document) return res.status(404).json({ error: 'Document not found' });
+		if (document.requests.length > 0)
+			return res.status(400).json({ error: 'Cannot delete document that ascociated with requests' });
 
 		unlinkSync(document.file);
 

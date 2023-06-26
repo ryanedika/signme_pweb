@@ -3,43 +3,44 @@ const Document = require('./document');
 const Request = require('./request');
 
 Document.belongsTo(User, {
-	foreignKey: 'owner_id',
 	as: 'owner',
+	foreignKey: 'owner_id',
 });
 
 Document.hasMany(Request, {
-	foreignKey: 'document_id',
 	as: 'requests',
+	foreignKey: 'document_id',
+	onDelete: 'CASCADE',
 });
 
 Request.belongsTo(User, {
-	foreignKey: 'sender_id',
 	as: 'sender',
+	foreignKey: 'sender_id',
 });
 
 Request.belongsTo(User, {
-	foreignKey: 'receiver_id',
 	as: 'receiver',
+	foreignKey: 'receiver_id',
 });
 
 Request.belongsTo(Document, {
-	foreignKey: 'document_id',
 	as: 'document',
+	foreignKey: 'document_id',
 });
 
 User.hasMany(Document, {
-	foreignKey: 'owner_id',
 	as: 'documents',
+	foreignKey: 'owner_id',
 });
 
 User.hasMany(Request, {
-	foreignKey: 'sender_id',
 	as: 'sent',
+	foreignKey: 'sender_id',
 });
 
 User.hasMany(Request, {
-	foreignKey: 'receiver_id',
 	as: 'received',
+	foreignKey: 'receiver_id',
 });
 
 module.exports = {
