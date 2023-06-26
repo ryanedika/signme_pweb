@@ -205,13 +205,52 @@ async function cancelRequest(req, res) {
 	}
 }
 
+const { PDFDocument } = require('pdf-lib');
+const { readFileSync, writeFileSync } = require('fs');
+
 async function confirmRequest(req, res) {
 	try {
 		const { id } = req.params;
 		const { id: user_id } = res.user;
 
-		const request = await Request.findOne({ where: { id: id, receiver_id: user_id, status: 'pending' } });
+		const user = await User.findOne({ where: { id: user_id } });
+		if (!user) return res.status(404).json({ message: 'User not found' });
+		if (!user.dataValues.signature) return res.status(404).json({ message: 'User signature not found' });
+
+		const request = await Request.findOne({
+			where: { id: id, receiver_id: user_id, status: 'pending' },
+			include: [{ model: Document, as: 'document' }],
+		});
 		if (!request) return res.status(404).json({ message: 'Request not found or status is not pending' });
+
+		// read pdf file and add user signature to it
+		const pdf = await PDFDocument.load(readFileSync(request.dataValues.document.file));
+
+		// read signature image [iamge file]
+		const signature = readFileSync(user.dataValues.signature);
+		const ext = user.dataValues.signature.split('.').pop();
+
+		// add user signature in the first page of the pdf file
+		// const pngImage = await pdf.embedPng(signature);
+		// const pngDims = pngImage.scale(0.5);
+		// const pages = pdf.getPages();
+		// const firstPage = pages[0];
+
+		// file can be jpeg, png, or jpg
+		const image = ext === 'png' ? await pdf.embedPng(signature) : await pdf.embedJpg(signature);
+		const pages = pdf.getPages();
+		const firstPage = pages[0];
+
+		firstPage.drawImage(image, {
+			x: firstPage.getWidth() - 100,
+			y: firstPage.getHeight() - 100,
+			width: 100,
+			height: 100,
+		});
+
+		// save the pdf file
+		const pdfBytes = await pdf.save();
+		writeFileSync(request.dataValues.document.file, pdfBytes);
 
 		await request.update({ status: 'confirmed' });
 		return res.status(200).json({ message: 'Request confirmed successfully' });
