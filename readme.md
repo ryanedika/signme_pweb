@@ -18,10 +18,15 @@ App for document signing, user will be able to create an account, upload documen
 
 ```
 DB_CONNECTION_STRING=
-JWT_SECRET=
 PORT=
+JWT_SECRET=
+BASE_URL=
+NODE_ENV=
 ```
 
+-   Setup database config in `config/config.json` for migrations
+-   Install sequelize-cli globally `npm install -g sequelize-cli`
+-   Run `sequelize db:migrate` to run migrations
 -   Run `npm run dev` to start the server
 
 ## Models
@@ -54,7 +59,3 @@ PORT=
 -   document_id: int
 -   status: string (pending, signed)
 -   timestamps [created_at, updated_at]
-
-npx sequelize-cli model:generate --name User --attributes fullname:string,username:string,email:string,instance:string,password:string,signature:string --underscored
-npx sequelize-cli model:generate --name Document --attributes owner_id:integer,title:string,description:string,file:string --underscored
-npx sequelize-cli model:generate --name Request --attributes sender_id:integer,receiver_id:integer,document_id:integer,status:string --underscored
