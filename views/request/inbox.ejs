@@ -40,10 +40,12 @@
 									<tr class="align-middle">
 										<td>
 											<div class="d-flex align-items-center">
+												<% if (request.sender.image) { %>
 												<img
 													src="<%= request.sender.image %>"
 													alt="<%= request.sender.fullname %>"
 													class="rounded-circle me-3 avatar" />
+												<% } %>
 												<span><%= request.sender.fullname %></span>
 											</div>
 										</td>

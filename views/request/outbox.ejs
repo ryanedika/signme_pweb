@@ -47,10 +47,12 @@
 									<tr class="align-middle">
 										<td>
 											<div class="d-flex align-items-center">
+												<% if (request.receiver.image) { %>
 												<img
 													src="<%= request.receiver.image %>"
 													alt="<%= request.receiver.fullname %>"
 													class="rounded-circle me-3 avatar" />
+												<% } %>
 												<span><%= request.receiver.fullname %></span>
 											</div>
 										</td>
