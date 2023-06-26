@@ -63,15 +63,17 @@
 			form.addEventListener('submit', async (e) => {
 				e.preventDefault();
 
-				const email = document.getElementById('email').value;
-				const password = document.getElementById('password').value;
+				const formData = {
+					email: form.email.value,
+					password: form.password.value,
+				};
 
 				fetch('/api/login', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({ email, password }),
+					body: JSON.stringify(formData),
 				})
 					.then((res) => res.json())
 					.then((data) => {

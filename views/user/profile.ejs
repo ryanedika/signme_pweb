@@ -120,15 +120,22 @@
 				const formData = new FormData(form);
 
 				fetch('/api/profile', {
-					method: 'POST',
+					method: 'PUT',
 					body: formData,
 				})
 					.then((res) => res.json())
 					.then((data) => {
-						if (data.error) alert(data.error);
-						else alert(data.message);
+						if (data.error) {
+							alert(data.error);
+							return;
+						}
+						alert(data.message);
+						window.location.reload();
 					})
-					.catch((err) => console.log(err));
+					.catch((err) => {
+						console.log(err);
+						alert('Failed to update profile');
+					});
 			});
 
 			signature.addEventListener('change', (e) => {

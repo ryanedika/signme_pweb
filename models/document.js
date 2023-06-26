@@ -33,15 +33,4 @@ const Document = sequelize.define(
 	}
 );
 
-Document.associate = (models) => {
-	Document.belongsTo(models.User, {
-		foreignKey: 'owner_id',
-		as: 'owner',
-	});
-	Document.hasMany(models.Request, {
-		foreignKey: 'document_id',
-		as: 'requests',
-	});
-};
-
 module.exports = Document;

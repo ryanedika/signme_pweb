@@ -34,19 +34,4 @@ const Request = sequelize.define(
 	}
 );
 
-Request.associate = (models) => {
-	Request.belongsTo(models.User, {
-		foreignKey: 'sender_id',
-		as: 'sender',
-	});
-	Request.belongsTo(models.User, {
-		foreignKey: 'receiver_id',
-		as: 'receiver',
-	});
-	Request.belongsTo(models.Document, {
-		foreignKey: 'document_id',
-		as: 'document',
-	});
-};
-
 module.exports = Request;

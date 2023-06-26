@@ -20,7 +20,8 @@
 			<div class="container-fluid">
 				<div class="row min-vh-100">
 					<%- include('../partials/sidebar') %>
-					<div class="col-12 col-lg-9 p-5">
+
+					<div class="col-12 col-lg-10 p-5">
 						<%- include('../partials/header') %>
 
 						<form enctype="multipart/form-data" class="mt-5" id="documentForm">
@@ -80,11 +81,10 @@
 							return;
 						}
 						alert(data.message);
-						window.location.href = '/document';
 					})
 					.catch((err) => {
 						console.log(err);
-						alert('Document upload failed');
+						alert('Upload document failed');
 					});
 			});
 

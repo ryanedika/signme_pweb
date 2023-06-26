@@ -44,17 +44,20 @@ function authenticateToken(req, res, next) {
 
 function authenticateRoute(req, res, next) {
 	const token = req.cookies.token;
+
 	if (!token) {
 		res.user = null;
 		res.clearCookie('token');
-		return next();
+		req.url === '/login' || req.url === '/register' ? next() : res.redirect('/');
+		return;
 	}
 
 	jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
 		if (err) {
 			res.user = null;
 			res.clearCookie('token');
-			return next();
+			req.url === '/login' || req.url === '/register' ? next() : res.redirect('/');
+			return;
 		}
 
 		res.user = user;

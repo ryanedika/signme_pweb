@@ -1,19 +1,9 @@
-const Document = require('../models/document');
+const { Document } = require('../models/models');
 
 const { unlinkSync } = require('fs');
-const { Op: Operands } = require('sequelize');
-const path = require('path');
+const { simpleTimeFormat } = require('../utilities/formatter');
+
 const BASE_URL = process.env.BASE_URL;
-
-function simpleTimeFormat(date) {
-	const options = {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric',
-	};
-
-	return new Intl.DateTimeFormat('en-US', options).format(date);
-}
 
 async function getUserDocuments(req, res) {
 	try {
@@ -24,6 +14,7 @@ async function getUserDocuments(req, res) {
 		});
 
 		documents.forEach((document) => {
+			document.dataValues.file = `${BASE_URL}/${document.dataValues.file}`;
 			document.dataValues.created_at = simpleTimeFormat(document.dataValues.created_at);
 			document.dataValues.updated_at = simpleTimeFormat(document.dataValues.updated_at);
 		});
@@ -31,7 +22,7 @@ async function getUserDocuments(req, res) {
 		return res.status(200).json(documents);
 	} catch (error) {
 		console.error('Error getting user documents:', error);
-		return res.status(500).json({ message: 'Internal server error' });
+		return res.status(500).json({ error: 'Internal server error' });
 	}
 }
 
@@ -48,11 +39,11 @@ async function uploadUserDocuments(req, res) {
 			owner_id: id,
 		};
 
-		const document = await Document.create(data);
-		return res.status(201).json(document);
+		await Document.create(data);
+		return res.status(201).json({ message: 'Document updated successfully' });
 	} catch (error) {
 		console.error('Error uploading user documents:', error);
-		return res.status(500).json({ message: 'Internal server error' });
+		return res.status(500).json({ error: 'Internal server error' });
 	}
 }
 
@@ -69,11 +60,11 @@ const getSingleDocument = async (req, res) => {
 		document.dataValues.updated_at = simpleTimeFormat(document.dataValues.updated_at);
 		document.dataValues.file = `${BASE_URL}/${document.dataValues.file}`;
 
-		if (!document) return res.status(404).json({ message: 'Document not found' });
+		if (!document) return res.status(404).json({ error: 'Document not found' });
 		return res.status(200).json(document);
 	} catch (error) {
 		console.error('Error getting single document:', error);
-		return res.status(500).json({ message: 'Internal server error' });
+		return res.status(500).json({ error: 'Internal server error' });
 	}
 };
 
@@ -95,7 +86,6 @@ const updateSingleDocument = async (req, res) => {
 
 		if (req.file) {
 			unlinkSync(document.file);
-			console.log(req.file);
 			const { path } = req.file;
 			data.file = path.replace(/\\/g, '/');
 		}
@@ -117,14 +107,15 @@ const deleteSingleDocument = async (req, res) => {
 			where: { id: document_id, owner_id: id },
 		});
 
-		if (!document) return res.status(404).json({ message: 'Document not found' });
+		if (!document) return res.status(404).json({ error: 'Document not found' });
 
 		unlinkSync(document.file);
+
 		await document.destroy();
 		return res.status(200).json({ message: 'Document deleted successfully' });
 	} catch (error) {
 		console.error('Error deleting single document:', error);
-		return res.status(500).json({ message: 'Internal server error' });
+		return res.status(500).json({ error: 'Internal server error' });
 	}
 };
 

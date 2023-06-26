@@ -1,6 +1,7 @@
 const express = require('express');
-const { authenticateRoute } = require('../middlewares/authenticate');
 const router = express.Router();
+
+const { authenticateRoute } = require('../middlewares/authenticate');
 
 router.get('/', (req, res) => {
 	res.render('index', {
@@ -27,36 +28,11 @@ router.get('/register', authenticateRoute, (req, res) => {
 });
 
 router.get('/dashboard', authenticateRoute, (req, res) => {
-	if (!res.user) res.redirect('/login');
-	else {
-		res.render('dashboard', {
-			user: res.user,
-			title: 'SignMe Dashboard',
-			message: 'Welcome Back!',
-		});
-	}
-});
-
-router.get('/inbox', authenticateRoute, (req, res) => {
-	if (!res.user) res.redirect('/login');
-	else {
-		res.render('request/inbox', {
-			user: res.user,
-			title: 'SignMe Inbox',
-			message: 'Document Sign Inbox',
-		});
-	}
-});
-
-router.get('/outbox', authenticateRoute, (req, res) => {
-	if (!res.user) res.redirect('/login');
-	else {
-		res.render('request/outbox', {
-			user: res.user,
-			title: 'SignMe Outbox',
-			message: 'Document Sign Outbox',
-		});
-	}
+	res.render('dashboard', {
+		user: res.user,
+		title: 'SignMe Dashboard',
+		message: 'Welcome Back!',
+	});
 });
 
 module.exports = router;

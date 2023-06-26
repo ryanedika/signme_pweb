@@ -1,10 +1,11 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
+const { User } = require('../models/models');
+const { Op: Operands } = require('sequelize');
 
 const { unlinkSync } = require('fs');
 const { generateToken } = require('../middlewares/authenticate');
-const { Op: Operands } = require('sequelize');
-const path = require('path');
+
+const BASE_URL = process.env.BASE_URL;
 
 async function registerUser(req, res) {
 	try {
@@ -71,8 +72,6 @@ async function loginUser(req, res) {
 		return res.status(500).json({ message: 'Internal server error' });
 	}
 }
-
-const BASE_URL = process.env.BASE_URL;
 
 async function getUserProfile(req, res) {
 	try {
@@ -144,10 +143,24 @@ async function logoutUser(req, res) {
 	}
 }
 
+async function getAllUsers(req, res) {
+	try {
+		const users = await User.findAll({
+			attributes: ['id', 'fullname', 'username', 'instance', 'email', 'image'],
+		});
+
+		return res.status(200).json(users);
+	} catch (error) {
+		console.error('Error getting all users:', error);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+}
+
 module.exports = {
 	registerUser,
 	loginUser,
 	getUserProfile,
 	logoutUser,
 	updateUserProfile,
+	getAllUsers,
 };

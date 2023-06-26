@@ -21,7 +21,7 @@
 				<div class="row min-vh-100">
 					<%- include('../partials/sidebar') %>
 
-					<div class="col-12 col-lg-9 p-5">
+					<div class="col-12 col-lg-10 p-5">
 						<%- include('../partials/header') %>
 
 						<div class="mt-5">
@@ -63,7 +63,12 @@
 												data-id="<%= document.id %>"
 												data-title="<%= document.title %>"
 												class="btn btn-signme d-inline-flex align-items-center">
-												<span class="material-symbols-rounded"> delete </span>
+												<span
+													class="material-symbols-rounded"
+													data-id="<%= document.id %>"
+													data-title="<%= document.title %>">
+													delete
+												</span>
 											</button>
 										</td>
 									</tr>

@@ -171,3 +171,8 @@ section {
 .fw-black {
 	font-weight: 900;
 }
+
+.avatar {
+	width: 32px;
+	aspect-ratio: 1/1;
+}
