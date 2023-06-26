@@ -3,15 +3,33 @@ const { Document, Request } = require('../models/models');
 const { unlinkSync } = require('fs');
 const { simpleTimeFormat } = require('../utilities/formatter');
 
+const sequelize = require('sequelize');
+const { Op: Operands } = require('sequelize');
+
 const BASE_URL = process.env.BASE_URL;
 
 async function getUserDocuments(req, res) {
 	try {
 		const { id } = res.user;
+		const { requested } = req.query || false;
 
-		const documents = await Document.findAll({
-			where: { owner_id: id },
-		});
+		// if requested true find all documents that id is not already used in request table
+		const documents = requested
+			? await Document.findAll({
+					where: {
+						owner_id: id,
+						id: {
+							[Operands.notIn]: [
+								sequelize.literal(
+									`SELECT document_id FROM requests WHERE sender_id = ${id} OR receiver_id = ${id}`
+								),
+							],
+						},
+					},
+			  })
+			: await Document.findAll({
+					where: { owner_id: id },
+			  });
 
 		documents.forEach((document) => {
 			document.dataValues.file = `${BASE_URL}/${document.dataValues.file}`;

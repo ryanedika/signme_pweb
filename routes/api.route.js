@@ -42,7 +42,7 @@ router.get('/requests/inbox', authenticateToken, RequestController.getUserInbox)
 
 router.post('/requests', authenticateToken, RequestController.createRequest);
 
-router.get('/requests/:id', authenticateToken, RequestController.getSingleOutbox);
+router.get('/requests/:id', authenticateToken, RequestController.getSingleRequest);
 
 router.put('/requests/:id', authenticateToken, RequestController.updateSingleOutbox);
 

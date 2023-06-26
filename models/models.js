@@ -7,10 +7,9 @@ Document.belongsTo(User, {
 	foreignKey: 'owner_id',
 });
 
-Document.hasMany(Request, {
+Document.hasOne(Request, {
 	as: 'requests',
 	foreignKey: 'document_id',
-	onDelete: 'CASCADE',
 });
 
 Request.belongsTo(User, {

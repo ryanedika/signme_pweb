@@ -1,5 +1,6 @@
 const { Request, User, Document } = require('../models/models');
 const { Op: Operands } = require('sequelize');
+const sequelize = require('sequelize');
 
 const { simpleTimeFormat } = require('../utilities/formatter');
 
@@ -82,34 +83,47 @@ async function createRequest(req, res) {
 		const { id } = res.user;
 		const { recipient, document } = req.body;
 
-		Promise.all([User.findOne({ where: { id: recipient } }), Document.findOne({ where: { id: document } })]).then(
-			async (data) => {
-				const [recipient, document] = data;
-				if (!recipient || !document) return res.status(404).json({ message: 'User or document not found' });
-			}
-		);
+		Promise.all([
+			User.findOne({ where: { id: recipient } }),
+			Document.findOne({
+				where: {
+					[Operands.and]: [
+						{ id: document },
+						sequelize.literal(
+							`id NOT IN (SELECT document_id FROM requests WHERE sender_id = ${id} OR receiver_id = ${id})`
+						),
+					],
+				},
+			}),
+		]).then(async (data) => {
+			const [recipient, document] = data;
+			if (!recipient || !document) return res.status(404).json({ message: 'User or document not found' });
 
-		const data = {
-			sender_id: id,
-			receiver_id: recipient,
-			document_id: document,
-		};
+			const newRequest = {
+				sender_id: id,
+				receiver_id: recipient,
+				document_id: document,
+			};
 
-		await Request.create(data);
-		return res.status(201).json({ message: 'Request created successfully' });
+			await Request.create(newRequest);
+			return res.status(201).json({ message: 'Request created successfully' });
+		});
 	} catch (error) {
 		console.error('Error creating request:', error);
 		return res.status(500).json({ error: 'Internal server error' });
 	}
 }
 
-async function getSingleOutbox(req, res) {
+async function getSingleRequest(req, res) {
 	try {
 		const { id } = req.params;
 		const { id: user_id } = res.user;
 
 		const request = await Request.findOne({
-			where: { id: id, sender_id: user_id },
+			where: {
+				id: id,
+				[Operands.or]: [{ sender_id: user_id }, { receiver_id: user_id }],
+			},
 			include: [
 				{
 					model: User,
@@ -193,7 +207,7 @@ module.exports = {
 	getUserOutbox,
 	getUserInbox,
 	createRequest,
-	getSingleOutbox,
+	getSingleRequest,
 	updateSingleOutbox,
 	cancelRequest,
 };

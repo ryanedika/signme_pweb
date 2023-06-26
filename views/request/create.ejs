@@ -82,12 +82,10 @@
 					recipient: form.recipient.value,
 				};
 
-				Object.keys(formData).forEach((key) => {
-					if (!formData[key]) {
-						alert('Please fill all fields');
-						return;
-					}
-				});
+				if (!formData.document || !formData.recipient) {
+					alert('Please fill all fields');
+					return;
+				}
 
 				fetch('/api/requests', {
 					method: 'POST',

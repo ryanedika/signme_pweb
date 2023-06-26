@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { authenticateRoute } = require('../middlewares/authenticate');
+const createHttpError = require('http-errors');
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -56,7 +57,7 @@ router.get('/inbox', authenticateRoute, (req, res) => {
 router.get('/create', authenticateRoute, (req, res) => {
 	try {
 		Promise.all([
-			fetch(`${BASE_URL}/api/documents`, {
+			fetch(`${BASE_URL}/api/documents?requested=false`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -123,6 +124,33 @@ router.get('/edit/:id', authenticateRoute, (req, res) => {
 			.catch((error) => {
 				console.error('Error getting user profile:', error);
 				return res.status(500).json({ message: 'Internal server error' });
+			});
+	} catch (error) {
+		console.error('Error getting user profile:', error);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+});
+
+router.get('/view/:id', authenticateRoute, (req, res, next) => {
+	try {
+		fetch(`${BASE_URL}/api/requests/${req.params.id}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${req.cookies.token}`,
+			},
+		})
+			.then((res) => {
+				if (!res.ok) return next(createHttpError(res.status));
+				return res.json();
+			})
+			.then((data) => {
+				res.render('request/view', {
+					title: 'SignMe View Request',
+					message: 'View Request',
+					user: res.user,
+					request: data,
+				});
 			});
 	} catch (error) {
 		console.error('Error getting user profile:', error);
