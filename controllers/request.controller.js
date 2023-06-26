@@ -26,11 +26,10 @@ async function getUserOutbox(req, res) {
 		});
 
 		requests.forEach((request) => {
-			const { receiver, document } = request.dataValues;
-			receiver.image = receiver.image ? `${BASE_URL}/${receiver.image}` : null;
-			document.file = `${BASE_URL}/${document.file}`;
-
-			request.dataValues = { receiver, document, created_at, updated_at };
+			request.dataValues.receiver.image = request.dataValues.receiver.image
+				? `${BASE_URL}/${request.dataValues.receiver.image}`
+				: null;
+			request.dataValues.document.file = `${BASE_URL}/${request.dataValues.document.file}`;
 			request.dataValues.created_at = simpleTimeFormat(request.dataValues.created_at);
 			request.dataValues.updated_at = simpleTimeFormat(request.dataValues.updated_at);
 		});
@@ -63,11 +62,10 @@ async function getUserInbox(req, res) {
 		});
 
 		requests.forEach((request) => {
-			const { sender, document } = request.dataValues;
-			sender.image = sender.image ? `${BASE_URL}/${sender.image}` : null;
-			document.file = `${BASE_URL}/${document.file}`;
-
-			request.dataValues = { sender, document, created_at, updated_at };
+			request.dataValues.sender.image = request.dataValues.sender.image
+				? `${BASE_URL}/${request.dataValues.sender.image}`
+				: null;
+			request.dataValues.document.file = `${BASE_URL}/${request.dataValues.document.file}`;
 			request.dataValues.created_at = simpleTimeFormat(request.dataValues.created_at);
 			request.dataValues.updated_at = simpleTimeFormat(request.dataValues.updated_at);
 		});
@@ -133,10 +131,15 @@ async function getSingleOutbox(req, res) {
 
 		if (!request) return res.status(404).json({ message: 'Request not found' });
 
-		const { sender, receiver, document } = request.dataValues;
-		sender.image = sender.image ? `${BASE_URL}/${sender.image}` : null;
-		receiver.image = receiver.image ? `${BASE_URL}/${receiver.image}` : null;
-		document.file = `${BASE_URL}/${document.file}`;
+		request.dataValues.sender.image = request.dataValues.sender.image
+			? `${BASE_URL}/${request.dataValues.sender.image}`
+			: null;
+
+		request.dataValues.receiver.image = request.dataValues.receiver.image
+			? `${BASE_URL}/${request.dataValues.receiver.image}`
+			: null;
+
+		request.dataValues.document.file = `${BASE_URL}/${request.dataValues.document.file}`;
 		request.dataValues.created_at = simpleTimeFormat(request.dataValues.created_at);
 		request.dataValues.updated_at = simpleTimeFormat(request.dataValues.updated_at);
 
