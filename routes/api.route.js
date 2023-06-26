@@ -48,4 +48,8 @@ router.put('/requests/:id', authenticateToken, RequestController.updateSingleOut
 
 router.post('/requests/:id/cancel', authenticateToken, RequestController.cancelRequest);
 
+router.post('/requests/:id/confirm', authenticateToken, RequestController.confirmRequest);
+
+router.post('/requests/:id/reject', authenticateToken, RequestController.rejectRequest);
+
 module.exports = router;

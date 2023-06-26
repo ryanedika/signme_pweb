@@ -58,13 +58,31 @@
 												class="btn btn-signme d-inline-flex align-items-center">
 												<span class="material-symbols-rounded"> visibility </span>
 											</a>
+
+											<% if (request.status === 'pending') { %>
 											<button
 												type="button"
-												id="delete"
+												id="confirm"
 												data-id="<%= request.id %>"
-												class="btn btn-signme d-inline-flex align-items-center">
-												<span class="material-symbols-rounded"> delete </span>
+												data-title="<%= request.document.title %>"
+												data-sender="<%= request.sender.fullname %>"
+												class="btn btn-success d-inline-flex align-items-center">
+												<span class="material-symbols-rounded"> done </span>
 											</button>
+											<% } %>
+
+											<!--  -->
+											<% if (request.status === 'pending') { %>
+											<button
+												type="button"
+												id="reject"
+												data-id="<%= request.id %>"
+												data-title="<%= request.document.title %>"
+												data-sender="<%= request.sender.fullname %>"
+												class="btn btn-danger d-inline-flex align-items-center">
+												<span class="material-symbols-rounded"> close </span>
+											</button>
+											<% } %>
 										</td>
 									</tr>
 									<% }) %>
@@ -86,5 +104,40 @@
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 			integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
 			crossorigin="anonymous"></script>
+
+		<script>
+			const buttons = document.querySelectorAll('#confirm, #reject');
+
+			buttons.forEach((button) => {
+				button.addEventListener('click', (e) => {
+					const { id, title, sender } = button.dataset;
+					const action = button.id === 'confirm' ? 'confirm' : 'reject';
+
+					if (!confirm(`Are you sure you want to ${action} ${title} to ${sender}?`)) {
+						return;
+					}
+
+					fetch(`/api/requests/${id}/${action}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					})
+						.then((res) => res.json())
+						.then((data) => {
+							if (data.error) {
+								alert(data.error);
+								return;
+							}
+							alert(data.message);
+							window.location.reload();
+						})
+						.catch((err) => {
+							console.log(err);
+							alert('Failed to process request');
+						});
+				});
+			});
+		</script>
 	</body>
 </html>

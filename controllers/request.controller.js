@@ -29,12 +29,9 @@ async function getUserOutbox(req, res) {
 		if (!requests) return res.status(404).json({ message: 'No requests found' });
 
 		requests.forEach((request) => {
-			console.log(request.dataValues.receiver);
-
-			if (request.dataValues.receiver.image) {
-				request.dataValues.receiver.image = `${BASE_URL}/${request.dataValues.receiver.image}`;
-			}
-
+			request.dataValues.receiver.image = request.dataValues.receiver.image
+				? `${BASE_URL}/${request.dataValues.receiver.image}`
+				: null;
 			request.dataValues.document.file = `${BASE_URL}/${request.dataValues.document.file}`;
 			request.dataValues.created_at = simpleTimeFormat(request.dataValues.created_at);
 			request.dataValues.updated_at = simpleTimeFormat(request.dataValues.updated_at);
@@ -110,7 +107,6 @@ async function createRequest(req, res) {
 				document_id: document.dataValues.id,
 			};
 
-			console.log(newRequest);
 			await Request.create(newRequest);
 			return res.status(201).json({ message: 'Request created successfully' });
 		});
@@ -198,13 +194,45 @@ async function cancelRequest(req, res) {
 		const { id } = req.params;
 		const { id: user_id } = res.user;
 
-		const request = await Request.findOne({ where: { id: id, sender_id: user_id } });
-		if (!request) return res.status(404).json({ message: 'Request not found' });
+		const request = await Request.findOne({ where: { id: id, sender_id: user_id, status: 'pending' } });
+		if (!request) return res.status(404).json({ message: 'Request not found or status is not pending' });
 
 		await request.update({ status: 'cancelled' });
 		return res.status(200).json({ message: 'Request cancelled successfully' });
 	} catch (error) {
 		console.error('Error cancelling user request:', error);
+		return res.status(500).json({ error: 'Internal server error' });
+	}
+}
+
+async function confirmRequest(req, res) {
+	try {
+		const { id } = req.params;
+		const { id: user_id } = res.user;
+
+		const request = await Request.findOne({ where: { id: id, receiver_id: user_id, status: 'pending' } });
+		if (!request) return res.status(404).json({ message: 'Request not found or status is not pending' });
+
+		await request.update({ status: 'confirmed' });
+		return res.status(200).json({ message: 'Request confirmed successfully' });
+	} catch (error) {
+		console.error('Error confirming user request:', error);
+		return res.status(500).json({ error: 'Internal server error' });
+	}
+}
+
+async function rejectRequest(req, res) {
+	try {
+		const { id } = req.params;
+		const { id: user_id } = res.user;
+
+		const request = await Request.findOne({ where: { id: id, receiver_id: user_id, status: 'pending' } });
+		if (!request) return res.status(404).json({ message: 'Request not found or status is not pending' });
+
+		await request.update({ status: 'rejected' });
+		return res.status(200).json({ message: 'Request rejected successfully' });
+	} catch (error) {
+		console.error('Error rejecting user request:', error);
 		return res.status(500).json({ error: 'Internal server error' });
 	}
 }
@@ -216,4 +244,6 @@ module.exports = {
 	getSingleRequest,
 	updateSingleOutbox,
 	cancelRequest,
+	confirmRequest,
+	rejectRequest,
 };

@@ -77,14 +77,9 @@
 												id="cancel"
 												data-id="<%= request.id %>"
 												data-title="<%= request.document.title %>"
+												data-receiver="<%= request.receiver.fullname %>"
 												class="btn btn-signme d-inline-flex align-items-center">
-												<span
-													class="material-symbols-rounded"
-													data-id="<%= request.id %>"
-													data-title="<%= request.document.title %>"
-													data-receiver="<%= request.receiver.fullname%> ">
-													delete
-												</span>
+												<span class="material-symbols-rounded"> delete </span>
 											</button>
 											<% } %>
 										</td>
@@ -114,9 +109,7 @@
 
 			buttons.forEach((button) => {
 				button.addEventListener('click', (e) => {
-					const id = e.target.dataset.id;
-					const title = e.target.dataset.title;
-					const receiver = e.target.dataset.receiver;
+					const { id, title, receiver } = button.dataset;
 
 					if (!confirm(`Are you sure you want to delete ${title} to ${receiver}?`)) {
 						return;
