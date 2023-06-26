@@ -1,6 +1,6 @@
 const { Request, User, Document } = require('../models/models');
-const { Op: Operands } = require('sequelize');
 const sequelize = require('sequelize');
+const { Op: Operands } = require('sequelize');
 
 const { simpleTimeFormat } = require('../utilities/formatter');
 
@@ -26,10 +26,15 @@ async function getUserOutbox(req, res) {
 			],
 		});
 
+		if (!requests) return res.status(404).json({ message: 'No requests found' });
+
 		requests.forEach((request) => {
-			request.dataValues.receiver.image = request.dataValues.receiver.image
-				? `${BASE_URL}/${request.dataValues.receiver.image}`
-				: null;
+			console.log(request.dataValues.receiver);
+
+			if (request.dataValues.receiver.image) {
+				request.dataValues.receiver.image = `${BASE_URL}/${request.dataValues.receiver.image}`;
+			}
+
 			request.dataValues.document.file = `${BASE_URL}/${request.dataValues.document.file}`;
 			request.dataValues.created_at = simpleTimeFormat(request.dataValues.created_at);
 			request.dataValues.updated_at = simpleTimeFormat(request.dataValues.updated_at);
@@ -90,7 +95,7 @@ async function createRequest(req, res) {
 					[Operands.and]: [
 						{ id: document },
 						sequelize.literal(
-							`id NOT IN (SELECT document_id FROM requests WHERE sender_id = ${id} OR receiver_id = ${id})`
+							`id NOT IN (SELECT document_id FROM Requests WHERE sender_id = ${id} OR receiver_id = ${id})`
 						),
 					],
 				},
@@ -101,10 +106,11 @@ async function createRequest(req, res) {
 
 			const newRequest = {
 				sender_id: id,
-				receiver_id: recipient,
-				document_id: document,
+				receiver_id: recipient.dataValues.id,
+				document_id: document.dataValues.id,
 			};
 
+			console.log(newRequest);
 			await Request.create(newRequest);
 			return res.status(201).json({ message: 'Request created successfully' });
 		});

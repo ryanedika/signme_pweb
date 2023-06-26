@@ -21,7 +21,7 @@ async function getUserDocuments(req, res) {
 						id: {
 							[Operands.notIn]: [
 								sequelize.literal(
-									`SELECT document_id FROM requests WHERE sender_id = ${id} OR receiver_id = ${id}`
+									`SELECT document_id FROM Requests WHERE sender_id = ${id} OR receiver_id = ${id}`
 								),
 							],
 						},

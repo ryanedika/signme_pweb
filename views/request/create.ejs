@@ -29,7 +29,9 @@
 								<select class="form-select" id="document" name="document">
 									<option selected disabled value="">Choose Document</option>
 									<% documents.length > 0 && documents.forEach(function(document) { %>
-									<option value="<%= document.id %>"><%= document.title %></option>
+									<option data-src="<%= document.file %>" value="<%= document.id %>">
+										<%= document.title %>
+									</option>
 									<% }) %>
 								</select>
 							</div>
@@ -62,14 +64,11 @@
 			crossorigin="anonymous"></script>
 
 		<script>
-			const documents = JSON.parse('<%- JSON.stringify(documents) %>');
-			const documentSelect = document.getElementById('document');
 			const pdf = document.getElementById('pdf');
+			const file = document.getElementById('document');
 
-			documentSelect.addEventListener('change', (e) => {
-				const id = e.target.value;
-				const document = documents.find((document) => document.id == id);
-				pdf.src = document.file;
+			file.addEventListener('change', (e) => {
+				pdf.src = e.target.selectedOptions[0].dataset.src;
 			});
 
 			const form = document.getElementById('requestForm');

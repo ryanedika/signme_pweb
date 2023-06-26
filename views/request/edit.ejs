@@ -29,7 +29,9 @@
 								<select class="form-select" id="document" name="document">
 									<option selected disabled value="">Choose Document</option>
 									<% documents && documents.forEach(function(document) { %>
-									<option value="<%= document.id %>"><%= document.title %></option>
+									<option data-src="<%= document.file %>" value="<%= document.id %>">
+										<%= document.title %>
+									</option>
 									<% }) %>
 								</select>
 							</div>
@@ -63,19 +65,16 @@
 
 		<script>
 			// set current request value
-			const documentSelect = document.getElementById('document');
-			const userSelect = document.getElementById('recipient');
+			const file = document.getElementById('document');
+			const recipient = document.getElementById('recipient');
 			const pdf = document.getElementById('pdf');
 
-			documentSelect.value = '<%- request.document.id %>';
-			userSelect.value = '<%- request.receiver.id %>';
+			file.value = '<%- request.document.id %>';
+			recipient.value = '<%- request.receiver.id %>';
 			pdf.src = '<%- request.document.file %>';
 
-			const documents = JSON.parse('<%- JSON.stringify(documents) %>');
-			documentSelect.addEventListener('change', (e) => {
-				const id = e.target.value;
-				const document = documents.find((document) => document.id == id);
-				pdf.src = document.file;
+			file.addEventListener('change', (e) => {
+				pdf.src = e.target.selectedOptions[0].dataset.src;
 			});
 
 			const form = document.getElementById('requestForm');

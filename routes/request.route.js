@@ -74,8 +74,6 @@ router.get('/create', authenticateRoute, (req, res) => {
 			}).then((res) => res.json()),
 		])
 			.then((data) => {
-				console.log(data);
-
 				res.render('request/create', {
 					title: 'SignMe Create Request',
 					message: 'Create Request',
