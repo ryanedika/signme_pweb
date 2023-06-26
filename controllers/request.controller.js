@@ -174,6 +174,8 @@ async function updateSingleOutbox(req, res) {
 
 		const request = await Request.findOne({ where: { id: id, sender_id: user_id } });
 		if (!request) return res.status(404).json({ message: 'Request not found' });
+		if (request.dataValues.status !== 'pending')
+			return res.status(404).json({ message: 'Cannot change request if status is not pending' });
 
 		const data = {
 			sender_id: user_id,
@@ -223,20 +225,11 @@ async function confirmRequest(req, res) {
 		});
 		if (!request) return res.status(404).json({ message: 'Request not found or status is not pending' });
 
-		// read pdf file and add user signature to it
 		const pdf = await PDFDocument.load(readFileSync(request.dataValues.document.file));
 
-		// read signature image [iamge file]
 		const signature = readFileSync(user.dataValues.signature);
 		const ext = user.dataValues.signature.split('.').pop();
 
-		// add user signature in the first page of the pdf file
-		// const pngImage = await pdf.embedPng(signature);
-		// const pngDims = pngImage.scale(0.5);
-		// const pages = pdf.getPages();
-		// const firstPage = pages[0];
-
-		// file can be jpeg, png, or jpg
 		const image = ext === 'png' ? await pdf.embedPng(signature) : await pdf.embedJpg(signature);
 		const pages = pdf.getPages();
 		const firstPage = pages[0];
@@ -248,7 +241,6 @@ async function confirmRequest(req, res) {
 			height: 100,
 		});
 
-		// save the pdf file
 		const pdfBytes = await pdf.save();
 		writeFileSync(request.dataValues.document.file, pdfBytes);
 
