@@ -2,6 +2,8 @@
 
 App for document signing, user will be able to create an account, upload document, assign signers, check sign request, sign document, and download signed document.
 
+![Alt text](public/img/screenshot.png)
+
 ## Getting Started
 
 ### Prerequisites
