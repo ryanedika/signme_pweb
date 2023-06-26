@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { authenticateRoute } = require('../middlewares/authenticate');
+const createHttpError = require('http-errors');
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -37,7 +38,7 @@ router.get('/create', authenticateRoute, (req, res) => {
 	});
 });
 
-router.get('/view/:id', authenticateRoute, (req, res) => {
+router.get('/view/:id', authenticateRoute, (req, res, next) => {
 	try {
 		fetch(`${BASE_URL}/api/documents/${req.params.id}`, {
 			method: 'GET',
@@ -46,7 +47,10 @@ router.get('/view/:id', authenticateRoute, (req, res) => {
 				Authorization: `Bearer ${req.cookies.token}`,
 			},
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) return next(createHttpError(res.status));
+				return res.json();
+			})
 			.then((data) => {
 				res.render('document/view', {
 					title: 'SignMe View Document',

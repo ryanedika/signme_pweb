@@ -53,8 +53,10 @@ const getSingleDocument = async (req, res) => {
 		const { id: document_id } = req.params;
 
 		const document = await Document.findOne({
-			where: { id: document_id, owner_id: id },
+			where: { id: document_id },
 		});
+
+		if (document.owner_id !== id) return res.status(403).json({ error: 'Cannot access document' });
 
 		document.dataValues.created_at = simpleTimeFormat(document.dataValues.created_at);
 		document.dataValues.updated_at = simpleTimeFormat(document.dataValues.updated_at);
