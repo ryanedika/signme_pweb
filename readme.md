@@ -4,32 +4,10 @@ App for document signing, user will be able to create an account, upload documen
 
 ![Alt text](public/img/screenshot.png)
 
-## Getting Started
-
-### Prerequisites
-
--   Node
--   NPM
--   MySQL
-
-### Installing
-
--   Clone the repo
--   Run `npm install` to install dependencies
--   Create a `.env` file in the root directory and add the following
-
-```
-DB_CONNECTION_STRING=
-PORT=
-JWT_SECRET=
-BASE_URL=
-NODE_ENV=
-```
-
--   Setup database config in `config/config.json` for migrations
--   Install sequelize-cli globally `npm install -g sequelize-cli`
--   Run `sequelize db:migrate` to run migrations
--   Run `npm run dev` to start the server
+## Anggota
+- Rakhilca Yanedika (2111522005)
+- Annisa Gita Subhi (2111522011)
+- Syakina Triyana (2111522017)
 
 ## Models
 
