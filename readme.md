@@ -2,8 +2,6 @@
 
 App for document signing, user will be able to create an account, upload document, assign signers, check sign request, sign document, and download signed document.
 
-![Alt text](public/img/screenshot.png)
-
 ## Anggota
 - Rakhilca Yanedika (2111522005)
 - Annisa Gita Subhi (2111522011)
@@ -22,7 +20,7 @@ App for document signing, user will be able to create an account, upload documen
 -   signature: string (image url)
 -   timestamps [created_at, updated_at]
 
-### ocument Model (One to Many with User)
+### Document Model (One to Many with User)
 
 -   id: int
 -   owner_id: int (user id)
